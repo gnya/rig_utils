@@ -3,6 +3,7 @@ from bpy.types import Context, Panel
 
 from rig_utils.core import is_asset
 from rig_utils.ops import (
+    OBJECT_OT_rig_utils_add_asset_select,
     OBJECT_OT_rig_utils_update_asset,
     POSE_OT_rig_utils_copy_bone_transform,
     POSE_OT_rig_utils_paste_bone_transform,
@@ -21,6 +22,11 @@ class VIEW3D_PT_rig_utils(Panel):
     def draw(self, context: Context):
         layout = self.layout
 
+        layout.operator(
+            OBJECT_OT_rig_utils_add_asset_select.bl_idname,
+            text="Add Asset",
+            icon="ADD",
+        )
         layout.operator(
             OBJECT_OT_rig_utils_update_asset.bl_idname,
             text="Update Asset",

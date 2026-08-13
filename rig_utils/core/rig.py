@@ -2,7 +2,7 @@ import os
 import re
 
 import bpy
-from bpy.types import Armature, Object, Pose
+from bpy.types import Armature, Collection, Object, Pose
 
 
 # 与えられたオブジェクトがアセットかどうかを判別します
@@ -76,8 +76,73 @@ def get_modified_bones(obj: Object) -> set[str]:
     return set([n for n in bone_names if not is_internal_bons(n)])
 
 
+# ディレクトリ内の最新のアセットを取得します
+def _get_asset_file(files: list[str]) -> str | None:
+    asset_files: list[tuple[str, int]] = []
+
+    for f in files:
+        if match := re.fullmatch(r"[A-Z]+_v(\d+).*\.blend", f):
+            asset_files.append((f, int(match.group(1))))
+
+    if len(asset_files) == 0:
+        return None
+
+    asset_files = sorted(asset_files, key=lambda f: f[1])
+
+    return asset_files[-1][0]
+
+
+# アセットのパスの一覧を取得します
+def get_assets_path(dir: str) -> list[tuple[str, str]]:
+    assets: list[tuple[str, str]] = []
+
+    for dir, _, files in os.walk(dir):
+        if os.path.basename(dir).startswith(("@", ".", "_")):
+            continue
+
+        file = _get_asset_file(files)
+
+        if file is None:
+            continue
+
+        assets.append((dir, file))
+
+    return assets
+
+
+# アセットのコレクションの一覧を取得します
+def get_asset_collections(path: str) -> list[str]:
+    collections: list[str] = []
+
+    with bpy.data.libraries.load(path, link=False) as (data_from, _):
+        for c in data_from.collections:
+            if re.fullmatch(r"[A-Z]+", c):
+                collections.append(c)
+
+    return collections
+
+
+# アセットを読み込みます
+def load_asset(path: str, collection: str) -> Collection | None:
+    with bpy.data.libraries.load(path, link=True) as (data_from, data_to):
+        if collection not in data_from.collections:
+            return None
+
+        data_to.collections = [collection]
+
+    link: Collection = data_to.collections[0]  # type: ignore
+    override = link.override_hierarchy_create(
+        bpy.context.scene,
+        bpy.context.view_layer,
+        reference=link,
+        do_fully_editable=True,
+    )
+
+    return override
+
+
 # 外部のアセットに依存しているかを判別します
-def has_override_library(obj: Object | None):
+def has_override_library(obj: Object | None) -> bool:
     return obj is not None and obj.override_library is not None
 
 
@@ -87,18 +152,15 @@ def get_asset_path(obj: Object) -> tuple[str, str, str]:
     current_path = bpy.path.abspath(lib.filepath)
     current_dir = os.path.dirname(current_path)
     current_file = os.path.basename(current_path)
-    files: list[tuple[str, int]] = []
+    latest_file = _get_asset_file(os.listdir(current_dir))
 
-    for f in os.listdir(current_dir):
-        if match := re.fullmatch(r"[A-Z]+_v(\d+).*\.blend", f):
-            files.append((f, int(match.group(1))))
+    if latest_file is None:
+        raise RuntimeError("Latest asset file doesn't exist.")
 
-    files = sorted(files, key=lambda f: f[1])
-
-    return (current_dir, current_file, files[-1][0])
+    return (current_dir, current_file, latest_file)
 
 
-# アセットを再読込します
+# アセットを指定されたパスで再読込します
 def set_asset_path(obj: Object, path: str):
     lib = obj.override_library.reference.library
     lib.filepath = path
