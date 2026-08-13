@@ -8,9 +8,14 @@ bl_info = {
 }
 
 
+from . import ops, ui
+
+
 def register():
-    pass
+    ops.register()
+    ui.register()
 
 
 def unregister():
-    pass
+    ops.unregister()
+    ui.unregister()
