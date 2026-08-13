@@ -1,5 +1,7 @@
+import os
 import re
 
+import bpy
 from bpy.types import Armature, Object, Pose
 
 
@@ -50,7 +52,7 @@ def is_internal_bons(bone_name: str):
 
 # アニメーションが設定されたボーンの一覧を取得します
 def get_animated_bones(obj: Object) -> set[str]:
-    bone_names = set()
+    bone_names: set[str] = set()
 
     if obj.animation_data.action is None:
         return bone_names
@@ -65,10 +67,39 @@ def get_animated_bones(obj: Object) -> set[str]:
 
 # レストポーズから変更されたボーンの一覧を取得します
 def get_modified_bones(obj: Object) -> set[str]:
-    bone_names = set()
+    bone_names: set[str] = set()
 
     for b in obj.pose.bones:
         if not b.matrix_basis.is_identity:
             bone_names.add(b.name)
 
     return set([n for n in bone_names if not is_internal_bons(n)])
+
+
+# 外部のアセットに依存しているかを判別します
+def has_override_library(obj: Object | None):
+    return obj is not None and obj.override_library is not None
+
+
+# アセットのパスを取得します
+def get_asset_path(obj: Object) -> tuple[str, str, str]:
+    lib = obj.override_library.reference.library
+    current_path = bpy.path.abspath(lib.filepath)
+    current_dir = os.path.dirname(current_path)
+    current_file = os.path.basename(current_path)
+    files: list[tuple[str, int]] = []
+
+    for f in os.listdir(current_dir):
+        if match := re.fullmatch(r"[A-Z]+_v(\d+).*\.blend", f):
+            files.append((f, int(match.group(1))))
+
+    files = sorted(files, key=lambda f: f[1])
+
+    return (current_dir, current_file, files[-1][0])
+
+
+# アセットを再読込します
+def set_asset_path(obj: Object, path: str):
+    lib = obj.override_library.reference.library
+    lib.filepath = path
+    lib.reload()

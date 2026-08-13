@@ -1,7 +1,11 @@
-from .rig import (
+from .asset import (
     OBJECT_OT_rig_utils_update_asset,
+)
+from .copy_paste import (
     POSE_OT_rig_utils_copy_bone_transform,
     POSE_OT_rig_utils_paste_bone_transform,
+)
+from .visibility import (
     POSE_OT_rig_utils_show_animated_bones,
     POSE_OT_rig_utils_show_modified_bones,
 )
