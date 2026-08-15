@@ -1,4 +1,8 @@
-from .rig import (
+from .copy_paste import (
+    copy_bone_transform,
+    paste_bone_transform,
+)
+from .core import (
     get_animated_bones,
     get_asset_collections,
     get_asset_path,
@@ -12,6 +16,7 @@ from .rig import (
 )
 
 __all__ = [
+    copy_bone_transform,
     get_animated_bones,
     get_asset_collections,
     get_asset_path,
@@ -20,6 +25,7 @@ __all__ = [
     has_override_library,
     is_asset,
     load_asset,
+    paste_bone_transform,
     set_asset_path,
     show_only_bones,
 ]

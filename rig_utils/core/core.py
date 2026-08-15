@@ -26,15 +26,15 @@ def show_only_bones(
     layers = armature.layers
 
     if include_hidden:
-        for b in bones:
-            if b.name in target_bones:
+        for bone in bones:
+            if bone.name in target_bones:
                 for i in range(32):
-                    layers[i] |= b.bone.layers[i]
+                    layers[i] |= bone.bone.layers[i]
 
     # target_bonesのボーンを表示、そうでないボーンを非表示にする
-    for b in bones:
-        if any([(b.bone.layers[i] and layers[i]) for i in range(32)]):
-            b.bone.hide = b.name not in target_bones
+    for bone in bones:
+        if any([(bone.bone.layers[i] and layers[i]) for i in range(32)]):
+            bone.bone.hide = bone.name not in target_bones
 
     for i in range(32):
         armature.layers[i] = layers[i]
@@ -52,14 +52,14 @@ def is_internal_bons(bone_name: str):
 
 # アニメーションが設定されたボーンの一覧を取得します
 def get_animated_bones(obj: Object) -> set[str]:
+    if obj.animation_data is None or obj.animation_data.action is None:
+        return set()
+
     bone_names: set[str] = set()
 
-    if obj.animation_data.action is None:
-        return bone_names
-
-    for f in obj.animation_data.action.fcurves:
-        if f.data_path.startswith('pose.bones["'):
-            bone_name = f.data_path.split('"')[1]
+    for fcurve in obj.animation_data.action.fcurves:
+        if fcurve.data_path.startswith('pose.bones["'):
+            bone_name = fcurve.data_path.split('"')[1]
             bone_names.add(bone_name)
 
     return set([n for n in bone_names if not is_internal_bons(n)])
@@ -69,9 +69,9 @@ def get_animated_bones(obj: Object) -> set[str]:
 def get_modified_bones(obj: Object) -> set[str]:
     bone_names: set[str] = set()
 
-    for b in obj.pose.bones:
-        if not b.matrix_basis.is_identity:
-            bone_names.add(b.name)
+    for bone in obj.pose.bones:
+        if not bone.matrix_basis.is_identity:
+            bone_names.add(bone.name)
 
     return set([n for n in bone_names if not is_internal_bons(n)])
 
@@ -80,9 +80,9 @@ def get_modified_bones(obj: Object) -> set[str]:
 def _get_asset_file(files: list[str]) -> str | None:
     asset_files: list[tuple[str, int]] = []
 
-    for f in files:
-        if match := re.fullmatch(r"[A-Z]+_v(\d+).*\.blend", f):
-            asset_files.append((f, int(match.group(1))))
+    for file in files:
+        if match := re.fullmatch(r"[A-Z]+_v(\d+).*\.blend", file):
+            asset_files.append((file, int(match.group(1))))
 
     if len(asset_files) == 0:
         return None
@@ -115,9 +115,9 @@ def get_asset_collections(path: str) -> list[str]:
     collections: list[str] = []
 
     with bpy.data.libraries.load(path, link=False) as (data_from, _):
-        for c in data_from.collections:
-            if re.fullmatch(r"[A-Z]+", c):
-                collections.append(c)
+        for collection in data_from.collections:
+            if re.fullmatch(r"[A-Z]+", collection):
+                collections.append(collection)
 
     return collections
 

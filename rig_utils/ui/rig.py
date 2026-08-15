@@ -79,7 +79,7 @@ class VIEW3D_PT_rig_utils_settings(Panel):
         obj = context.active_object
 
         if obj is None:
-            raise RuntimeError("オブジェクトが選択されていません")
+            raise RuntimeError("Object is not selected.")
 
         layout = self.layout
 
