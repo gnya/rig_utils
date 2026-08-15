@@ -5,7 +5,7 @@ import bpy
 from bpy.types import Constraint, FCurve, Object
 from mathutils import Matrix
 
-from .core import is_internal_bons
+from .visibility import is_internal_bones
 
 
 # ボーンのトランスフォームをワールド座標系でコピーする
@@ -14,7 +14,7 @@ def copy_bone_transform(obj: Object):
     bones = obj.pose.bones
 
     for bone in bones:
-        if bone.bone.select and not is_internal_bons(bone.name):
+        if bone.bone.select and not is_internal_bones(bone.name):
             matrix = obj.convert_space(
                 pose_bone=bone,
                 matrix=bone.matrix,

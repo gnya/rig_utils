@@ -36,7 +36,7 @@ class OBJECT_OT_rig_utils_add_asset_select(Operator):
     asset_path: EnumProperty(name="Asset Path", items=_assets_path)
 
     def invoke(self, context: Context, event: Event) -> set[OperatorReturnItems]:
-        dir = "D:\\01 gnya\\12 FRENZ 2024\\asset"
+        dir: str = context.preferences.addons["rig_utils"].preferences.asset_dir
 
         global _assets_path_cache
         _assets_path_cache = []

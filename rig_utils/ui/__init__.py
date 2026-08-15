@@ -1,9 +1,13 @@
-from .rig import (
+from .panel import (
     VIEW3D_PT_rig_utils,
     VIEW3D_PT_rig_utils_settings,
 )
+from .preferences import (
+    RigUtilsPreferences,
+)
 
 classes = (
+    RigUtilsPreferences,
     VIEW3D_PT_rig_utils,
     VIEW3D_PT_rig_utils_settings,
 )

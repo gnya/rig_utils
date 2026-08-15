@@ -84,7 +84,7 @@ class VIEW3D_PT_rig_utils_settings(Panel):
         layout = self.layout
 
         if "physics" in obj and "inertia" in obj:
-            layout.prop(obj, '["physics"]', text="Physics", slider=False)
+            layout.prop(obj, '["physics"]', text="Physics")
             layout.prop(obj, '["inertia"]', text="Inertia", slider=True)
 
         if "preview_subsurf" in obj and "render_subsurf" in obj:
