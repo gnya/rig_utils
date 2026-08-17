@@ -1,4 +1,3 @@
-import bpy
 from bpy.types import Context, Panel
 
 from rig_utils.core import is_asset
@@ -67,7 +66,7 @@ class VIEW3D_PT_rig_utils_settings(Panel):
 
     @classmethod
     def poll(cls, context: Context) -> bool:
-        obj = bpy.context.active_object
+        obj = context.active_object
 
         return (
             is_asset(obj)

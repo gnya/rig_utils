@@ -1,9 +1,11 @@
 from .utils import (
-    register_simple_keymap,
-    unregister_simple_keymap,
+    is_internal_bones,
+    register_keymap,
+    unregister_keymap,
 )
 
 __all__ = [
-    register_simple_keymap,
-    unregister_simple_keymap,
+    is_internal_bones,
+    register_keymap,
+    unregister_keymap,
 ]

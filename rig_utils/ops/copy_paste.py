@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from bpy.types import Context, Operator
 
 from rig_utils.core import copy_bone_transform, paste_bone_transform
-from rig_utils.utils import register_simple_keymap, unregister_simple_keymap
+from rig_utils.utils import register_keymap, unregister_keymap
 
 if TYPE_CHECKING:
     from bpy._typing.rna_enums import OperatorReturnItems
@@ -33,7 +33,7 @@ class POSE_OT_rig_utils_copy_bone_transform(Operator):
 
     @staticmethod
     def register():
-        register_simple_keymap(
+        register_keymap(
             "Pose",
             POSE_OT_rig_utils_copy_bone_transform.bl_idname,
             type="C",
@@ -43,7 +43,7 @@ class POSE_OT_rig_utils_copy_bone_transform(Operator):
 
     @staticmethod
     def unregister():
-        unregister_simple_keymap(
+        unregister_keymap(
             "Pose",
             POSE_OT_rig_utils_copy_bone_transform.bl_idname,
         )
@@ -72,7 +72,7 @@ class POSE_OT_rig_utils_paste_bone_transform(Operator):
 
     @staticmethod
     def register():
-        register_simple_keymap(
+        register_keymap(
             "Pose",
             POSE_OT_rig_utils_paste_bone_transform.bl_idname,
             type="V",
@@ -82,7 +82,7 @@ class POSE_OT_rig_utils_paste_bone_transform(Operator):
 
     @staticmethod
     def unregister():
-        unregister_simple_keymap(
+        unregister_keymap(
             "Pose",
             POSE_OT_rig_utils_paste_bone_transform.bl_idname,
         )

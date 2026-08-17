@@ -8,7 +8,18 @@ if TYPE_CHECKING:
     from bpy._typing.rna_enums import EventTypeItems
 
 
-def register_simple_keymap(
+# 内部で使用されているボーンかどうかを判別します
+def is_internal_bones(bone_name: str):
+    splited = bone_name.split("-", 1)
+
+    if len(splited) == 1:
+        return False
+
+    return splited[0] in ["DEF", "VIS", "MCH", "ORG"]
+
+
+# キーマップを追加します
+def register_keymap(
     category: str,
     idname: str,
     type: EventTypeItems,
@@ -32,7 +43,8 @@ def register_simple_keymap(
     )
 
 
-def unregister_simple_keymap(category: str, idname: str):
+# キーマップを削除します
+def unregister_keymap(category: str, idname: str):
     wm = bpy.context.window_manager
     km = wm.keyconfigs.addon.keymaps.get(category)
 

@@ -1,14 +1,6 @@
 from bpy.types import Armature, Object, Pose
 
-
-# 内部で使用されているボーンかどうかを判別します
-def is_internal_bones(bone_name: str):
-    splited = bone_name.split("-", 1)
-
-    if len(splited) == 1:
-        return False
-
-    return splited[0] in ["DEF", "VIS", "MCH", "ORG"]
+from rig_utils.utils import is_internal_bones
 
 
 # 指定されたボーンをすべて表示してそれ以外を非表示にします
