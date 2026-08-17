@@ -89,7 +89,7 @@ def _get_driver_dependencies(obj: Object, fcurve: FCurve) -> set[str]:
 
 
 # あるボーンが依存しているボーンの一覧を格納した辞書を計算する
-def calc_dependencies_by_bone(obj: Object):
+def calc_dependencies_by_bone(obj: Object) -> dict[str, set[str]]:
     dependencies_by_bone: dict[str, set[str]] = {}
     bones = obj.pose.bones
 

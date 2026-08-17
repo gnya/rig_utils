@@ -36,15 +36,9 @@ def get_assets_path(dir: str) -> list[tuple[str, str]]:
     assets: list[tuple[str, str]] = []
 
     for dir, _, files in os.walk(dir):
-        if os.path.basename(dir).startswith(("@", ".", "_")):
-            continue
-
-        file = _get_asset_file(files)
-
-        if file is None:
-            continue
-
-        assets.append((dir, file))
+        if not os.path.basename(dir).startswith(("@", ".", "_")):
+            if (file := _get_asset_file(files)) is not None:
+                assets.append((dir, file))
 
     return assets
 
@@ -94,7 +88,7 @@ def get_asset_path(obj: Object) -> tuple[str, str, str]:
     latest_file = _get_asset_file(os.listdir(current_dir))
 
     if latest_file is None:
-        raise RuntimeError("Latest asset file doesn't exist.")
+        raise FileNotFoundError("Latest asset file doesn't exist")
 
     return (current_dir, current_file, latest_file)
 
