@@ -4,6 +4,9 @@ import re
 import bpy
 from bpy.types import Collection, Object
 
+_assets_path_cache: list[tuple[str, str]] = []
+_assets_collection_cache: list[str] = []
+
 
 # 与えられたオブジェクトがアセットかどうかを判別します
 def is_asset(obj: Object | None) -> bool:
@@ -16,7 +19,7 @@ def is_asset(obj: Object | None) -> bool:
 
 
 # ディレクトリ内の最新のアセットを取得します
-def _get_asset_file(files: list[str]) -> str | None:
+def _latest_asset_file(files: list[str]) -> str | None:
     asset_files: list[tuple[str, int]] = []
 
     for file in files:
@@ -32,19 +35,30 @@ def _get_asset_file(files: list[str]) -> str | None:
 
 
 # アセットのパスの一覧を取得します
-def get_assets_path(dir: str) -> list[tuple[str, str]]:
+def _load_assets_path(dir: str) -> list[tuple[str, str]]:
     assets: list[tuple[str, str]] = []
 
     for dir, _, files in os.walk(dir):
         if not os.path.basename(dir).startswith(("@", ".", "_")):
-            if (file := _get_asset_file(files)) is not None:
+            if (file := _latest_asset_file(files)) is not None:
                 assets.append((dir, file))
 
     return assets
 
 
+# アセットのパスの一覧をキャッシュします
+def cache_assets_path(dir: str):
+    global _assets_path_cache
+    _assets_path_cache = _load_assets_path(dir)
+
+
+# アセットのパスの一覧のキャッシュを取得します
+def cached_assets_path() -> list[tuple[str, str]]:
+    return _assets_path_cache
+
+
 # アセットのコレクションの一覧を取得します
-def get_asset_collections(path: str) -> list[str]:
+def _load_assets_collection(path: str) -> list[str]:
     collections: list[str] = []
 
     with bpy.data.libraries.load(path, link=False) as (data_from, _):
@@ -53,6 +67,17 @@ def get_asset_collections(path: str) -> list[str]:
                 collections.append(collection)
 
     return collections
+
+
+# アセットのコレクションの一覧をキャッシュします
+def cache_assets_collection(path: str):
+    global _assets_collection_cache
+    _assets_collection_cache = _load_assets_collection(path)
+
+
+# アセットのコレクションの一覧のキャッシュを取得します
+def cached_assets_collection() -> list[str]:
+    return _assets_collection_cache
 
 
 # アセットを読み込みます
@@ -85,7 +110,7 @@ def get_asset_path(obj: Object) -> tuple[str, str, str]:
     current_path = bpy.path.abspath(lib.filepath)
     current_dir = os.path.dirname(current_path)
     current_file = os.path.basename(current_path)
-    latest_file = _get_asset_file(os.listdir(current_dir))
+    latest_file = _latest_asset_file(os.listdir(current_dir))
 
     if latest_file is None:
         raise FileNotFoundError("Latest asset file doesn't exist")

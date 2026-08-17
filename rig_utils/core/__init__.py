@@ -1,7 +1,9 @@
 from .asset import (
-    get_asset_collections,
+    cache_assets_collection,
+    cache_assets_path,
+    cached_assets_collection,
+    cached_assets_path,
     get_asset_path,
-    get_assets_path,
     has_override_library,
     is_asset,
     load_asset,
@@ -18,11 +20,13 @@ from .visibility import (
 )
 
 __all__ = [
+    cache_assets_collection,
+    cache_assets_path,
+    cached_assets_collection,
+    cached_assets_path,
     copy_bone_transform,
     get_animated_bones,
-    get_asset_collections,
     get_asset_path,
-    get_assets_path,
     get_modified_bones,
     has_override_library,
     is_asset,

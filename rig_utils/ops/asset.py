@@ -8,9 +8,11 @@ from bpy.props import EnumProperty, StringProperty
 from bpy.types import Context, Event, Operator
 
 from rig_utils.core import (
-    get_asset_collections,
+    cache_assets_collection,
+    cache_assets_path,
+    cached_assets_collection,
+    cached_assets_path,
     get_asset_path,
-    get_assets_path,
     has_override_library,
     is_asset,
     load_asset,
@@ -20,9 +22,6 @@ from rig_utils.core import (
 if TYPE_CHECKING:
     from bpy._typing.rna_enums import OperatorReturnItems
 
-_assets_path_cache: list[tuple[str, str, str]] = []
-_asset_collections_cache: list[tuple[str, str, str]] = []
-
 
 class OBJECT_OT_rig_utils_add_asset_select(Operator):
     bl_idname = "object.rig_utils_add_asset_select"
@@ -31,21 +30,15 @@ class OBJECT_OT_rig_utils_add_asset_select(Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def _assets_path(self, context: Context) -> list[tuple[str, str, str]]:
-        return _assets_path_cache
+        return [(os.path.join(d, f), f, f'"{d}"') for d, f in cached_assets_path()]
 
     asset_path: EnumProperty(name="Asset Path", items=_assets_path)
 
     def invoke(self, context: Context, event: Event) -> set[OperatorReturnItems]:
-        dir: str = context.preferences.addons["rig_utils"].preferences.asset_dir
-
-        global _assets_path_cache
-        _assets_path_cache = []
-
-        for dir, file in get_assets_path(dir):
-            path = os.path.join(dir, file)
-            _assets_path_cache.append((path, file, f'"{path}"'))
-
+        addon = context.preferences.addons["rig_utils"]
         wm = context.window_manager
+
+        cache_assets_path(addon.preferences.asset_dir)
 
         return wm.invoke_props_dialog(self)
 
@@ -70,20 +63,16 @@ class OBJECT_OT_rig_utils_add_asset_select_collection(Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def _assets_collection(self, context: Context) -> list[tuple[str, str, str]]:
-        return _asset_collections_cache
+        return [(c, c, "") for c in cached_assets_collection()]
 
     asset_path: StringProperty(name="Asset Path")
 
     asset_collection: EnumProperty(name="Asset Collection", items=_assets_collection)
 
     def invoke(self, context: Context, event: Event) -> set[OperatorReturnItems]:
-        global _asset_collections_cache
-        _asset_collections_cache = []
-
-        for collection in get_asset_collections(self.asset_path):
-            _asset_collections_cache.append((collection, collection, ""))
-
         wm = context.window_manager
+
+        cache_assets_collection(self.asset_path)
 
         return wm.invoke_props_dialog(self)
 
