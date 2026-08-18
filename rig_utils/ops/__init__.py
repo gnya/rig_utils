@@ -4,6 +4,9 @@ from .asset import (
     OBJECT_OT_rig_utils_add_asset_select_collection,
     OBJECT_OT_rig_utils_update_asset,
 )
+from .convert import (
+    POSE_OT_rig_utils_convert_legacy_transform,
+)
 from .copy_paste import (
     POSE_OT_rig_utils_copy_bone_transform,
     POSE_OT_rig_utils_paste_bone_transform,
@@ -17,6 +20,7 @@ classes = (
     OBJECT_OT_rig_utils_add_asset,
     OBJECT_OT_rig_utils_add_asset_select,
     OBJECT_OT_rig_utils_add_asset_select_collection,
+    POSE_OT_rig_utils_convert_legacy_transform,
     OBJECT_OT_rig_utils_update_asset,
     POSE_OT_rig_utils_copy_bone_transform,
     POSE_OT_rig_utils_paste_bone_transform,

@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from bpy.props import EnumProperty, PointerProperty
-from bpy.types import PropertyGroup, Scene
+from bpy.types import Object, PropertyGroup, Scene
 
 
 class RigUtilsSettings(PropertyGroup):
     PROP_NAME = "rig_utils_settings"
+
+    def _poll_convert_legacy_src(self, obj: Object) -> bool:
+        return obj.type == "ARMATURE"
 
     copy_transform_space: EnumProperty(
         items=[
@@ -41,6 +44,13 @@ class RigUtilsSettings(PropertyGroup):
         name="Copy Transform Space",
         description="Copy transform space",
         default=0,
+    )
+
+    convert_legacy_src: PointerProperty(
+        type=Object,
+        name="Convert Legacy Source",
+        description="Convert legacy source",
+        poll=_poll_convert_legacy_src,
     )
 
     @staticmethod

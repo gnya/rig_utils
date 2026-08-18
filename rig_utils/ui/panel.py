@@ -4,6 +4,7 @@ from rig_utils.core import is_asset
 from rig_utils.ops import (
     OBJECT_OT_rig_utils_add_asset_select,
     OBJECT_OT_rig_utils_update_asset,
+    POSE_OT_rig_utils_convert_legacy_transform,
     POSE_OT_rig_utils_copy_bone_transform,
     POSE_OT_rig_utils_paste_bone_transform,
     POSE_OT_rig_utils_show_animated_bones,
@@ -35,6 +36,18 @@ class VIEW3D_PT_rig_utils(Panel):
 
         group = layout.column(align=True)
         group.operator(
+            POSE_OT_rig_utils_show_modified_bones.bl_idname,
+            text="Show Modified",
+            icon="HIDE_OFF",
+        )
+        group.operator(
+            POSE_OT_rig_utils_show_animated_bones.bl_idname,
+            text="Show Animated",
+            icon="HIDE_OFF",
+        )
+
+        group = layout.column(align=True)
+        group.operator(
             POSE_OT_rig_utils_copy_bone_transform.bl_idname,
             text="Copy Transform",
             icon="COPYDOWN",
@@ -53,14 +66,14 @@ class VIEW3D_PT_rig_utils(Panel):
 
         group = layout.column(align=True)
         group.operator(
-            POSE_OT_rig_utils_show_modified_bones.bl_idname,
-            text="Show Modified",
-            icon="HIDE_OFF",
+            POSE_OT_rig_utils_convert_legacy_transform.bl_idname,
+            text="Convert Legacy Transform",
+            icon="TRACKING",
         )
-        group.operator(
-            POSE_OT_rig_utils_show_animated_bones.bl_idname,
-            text="Show Animated",
-            icon="HIDE_OFF",
+        group.prop(
+            get_settings(context.scene),
+            "convert_legacy_src",
+            text="",
         )
 
 

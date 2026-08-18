@@ -20,7 +20,10 @@ class POSE_OT_rig_utils_copy_bone_transform(Operator):
 
     @classmethod
     def poll(cls, context: Context) -> bool:
-        return context.mode == "POSE"
+        return (
+            context.mode == "POSE"
+            and len(context.selected_pose_bones_from_active_object) > 0
+        )
 
     def execute(self, context: Context) -> set[OperatorReturnItems]:
         obj = context.active_object

@@ -9,6 +9,9 @@ from .asset import (
     load_asset,
     set_asset_path,
 )
+from .convert import (
+    convert_legacy_transform,
+)
 from .copy_paste import (
     copy_bone_transform,
     paste_bone_transform,
@@ -25,6 +28,7 @@ __all__ = [
     cached_assets_collection,
     cached_assets_path,
     copy_bone_transform,
+    convert_legacy_transform,
     get_animated_bones,
     get_asset_path,
     get_modified_bones,
