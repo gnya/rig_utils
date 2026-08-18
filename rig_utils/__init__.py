@@ -8,14 +8,16 @@ bl_info = {
 }
 
 
-from . import ops, ui
+from . import ops, props, ui
 
 
 def register():
+    props.register()
     ops.register()
     ui.register()
 
 
 def unregister():
+    props.unregister()
     ops.unregister()
     ui.unregister()

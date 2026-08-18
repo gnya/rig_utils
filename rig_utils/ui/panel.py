@@ -9,6 +9,7 @@ from rig_utils.ops import (
     POSE_OT_rig_utils_show_animated_bones,
     POSE_OT_rig_utils_show_modified_bones,
 )
+from rig_utils.props import get_settings
 
 
 class VIEW3D_PT_rig_utils(Panel):
@@ -35,12 +36,18 @@ class VIEW3D_PT_rig_utils(Panel):
         group = layout.column(align=True)
         group.operator(
             POSE_OT_rig_utils_copy_bone_transform.bl_idname,
-            text="Copy (World Space)",
+            text="Copy Transform",
             icon="COPYDOWN",
         )
-        group.operator(
+        group.prop(
+            get_settings(context.scene),
+            "copy_transform_space",
+            text="",
+        )
+
+        layout.operator(
             POSE_OT_rig_utils_paste_bone_transform.bl_idname,
-            text="Paste (World Space)",
+            text="Paste Transform",
             icon="PASTEDOWN",
         )
 

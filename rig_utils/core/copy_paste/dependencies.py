@@ -3,6 +3,9 @@ from bpy.types import Constraint, FCurve, Object
 
 # コンストレイントが依存しているボーンを取得する
 def _get_constraint_dependencies(obj: Object, constraint: Constraint) -> set[str]:
+    if not constraint.enabled or constraint.influence == 0.0:
+        return set()
+
     dependencies = set()
 
     if (
@@ -15,7 +18,7 @@ def _get_constraint_dependencies(obj: Object, constraint: Constraint) -> set[str
     match constraint.type:
         case "ARMATURE":
             for target in constraint.targets:
-                if target.target == obj and target.subtarget:
+                if target.target == obj and target.subtarget and target.weight > 0.0:
                     dependencies.add(target.subtarget)
         case "IK":
             if constraint.pole_target == obj and constraint.pole_subtarget:

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from bpy.types import Context, Operator
 
 from rig_utils.core import copy_bone_transform, paste_bone_transform
+from rig_utils.props import get_settings
 from rig_utils.utils import register_keymap, unregister_keymap
 
 if TYPE_CHECKING:
@@ -14,7 +15,7 @@ if TYPE_CHECKING:
 class POSE_OT_rig_utils_copy_bone_transform(Operator):
     bl_idname = "pose.rig_utils_copy_bone_transform"
     bl_label = "Copy Bone Transform"
-    bl_description = "Copy bone transform (World Space)"
+    bl_description = "Copy bone transform"
     bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
@@ -27,7 +28,9 @@ class POSE_OT_rig_utils_copy_bone_transform(Operator):
         if obj is None:
             return {"CANCELLED"}
 
-        copy_bone_transform(obj)
+        settings = get_settings(context.scene)
+
+        copy_bone_transform(obj, settings.copy_transform_space)
 
         return {"FINISHED"}
 
@@ -52,7 +55,7 @@ class POSE_OT_rig_utils_copy_bone_transform(Operator):
 class POSE_OT_rig_utils_paste_bone_transform(Operator):
     bl_idname = "pose.rig_utils_paste_bone_transform"
     bl_label = "Paste Bone Transform"
-    bl_description = "Paste bone transform (World Space)"
+    bl_description = "Paste bone transform"
     bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
