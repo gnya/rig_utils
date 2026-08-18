@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import bpy
+from bpy.types import PoseBone
 
 if TYPE_CHECKING:
     from bpy._typing.rna_enums import EventTypeItems
@@ -16,6 +17,15 @@ def is_internal_bones(bone_name: str):
         return False
 
     return splited[0] in ["DEF", "VIS", "MCH", "ORG"]
+
+
+# 表示状態を考慮してボーンが選択されていているかどうかを返します
+def is_selected_bone(bone: PoseBone):
+    layers = bone.bone.id_data.layers
+
+    return bone.bone.select and any(
+        [(bone.bone.layers[i] and layers[i]) for i in range(32)]
+    )
 
 
 # キーマップを追加します

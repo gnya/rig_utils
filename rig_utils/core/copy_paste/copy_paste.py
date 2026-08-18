@@ -4,7 +4,7 @@ from json.decoder import JSONDecodeError
 import bpy
 from bpy.types import Object
 
-from rig_utils.utils import is_internal_bones
+from rig_utils.utils import is_internal_bones, is_selected_bone
 
 from .dependencies import calc_dependencies_by_bone
 from .properties import get_custom_properties, set_custom_properties
@@ -26,7 +26,7 @@ def copy_bone_transform(
     bones = obj.pose.bones
 
     for bone in bones:
-        if bone.bone.select and not is_internal_bones(bone.name):
+        if is_selected_bone(bone) and not is_internal_bones(bone.name):
             bone_data[bone.name] = {
                 "matrix": get_transform(bone, space),
                 "props": get_custom_properties(bone),
