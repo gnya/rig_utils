@@ -92,7 +92,10 @@ def _get_driver_dependencies(obj: Object, fcurve: FCurve) -> set[str]:
 
 
 # あるボーンが依存しているボーンの一覧を格納した辞書を計算する
-def calc_dependencies_by_bone(obj: Object) -> dict[str, set[str]]:
+def calc_dependencies_by_bone(
+    obj: Object,
+    allow_self_dependency: bool = True,
+) -> dict[str, set[str]]:
     dependencies_by_bone: dict[str, set[str]] = {}
     bones = obj.pose.bones
 
@@ -117,10 +120,9 @@ def calc_dependencies_by_bone(obj: Object) -> dict[str, set[str]]:
                     fcurve,
                 )
 
-    # 単一のボーン内で循環参照している場合は無視する
-    # TODO 処理の方針と矛盾するので将来的にオプションにする
-    for bone_name, dependencies in dependencies_by_bone.items():
-        if bone_name in dependencies:
-            dependencies.remove(bone_name)
+    if allow_self_dependency:
+        # 単一のボーン内で循環参照している場合は無視する
+        for bone_name, dependencies in dependencies_by_bone.items():
+            dependencies.discard(bone_name)
 
     return dependencies_by_bone
