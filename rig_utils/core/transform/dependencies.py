@@ -92,7 +92,7 @@ def _get_driver_dependencies(obj: Object, fcurve: FCurve) -> set[str]:
 
 
 # あるボーンが依存しているボーンの一覧を格納した辞書を計算する
-def calc_dependencies_by_bone(
+def _calc_dependencies_by_bone(
     obj: Object,
     allow_self_dependency: bool = True,
 ) -> dict[str, set[str]]:
@@ -126,3 +126,44 @@ def calc_dependencies_by_bone(
             dependencies.discard(bone_name)
 
     return dependencies_by_bone
+
+
+# あるボーンに対する深さを格納した辞書を計算する
+def calc_depth_by_bone(obj: Object) -> dict[str, int]:
+    dependencies_by_bone = _calc_dependencies_by_bone(obj)
+    depth_by_bone: dict[str, int] = {}
+
+    # みているボーンが依存しているボーンの一覧を計算する
+    def _calc_depth(dependencies: set[str]) -> int | None:
+        if len(dependencies) == 0:
+            # ボーンが何にも依存していないならdepthは0
+            return 0
+
+        max_depth = 0
+
+        # みているボーンが依存しているボーンが依存しているボーンをみて一番深いdepthを探す
+        for dependency in dependencies:
+            if dependency not in depth_by_bone:
+                return None
+
+            max_depth = max(max_depth, depth_by_bone[dependency])
+
+        # dependencyがすべてdepth_by_boneに含まれるならmax_depth+1がボーンのdepthとなる
+        return max_depth + 1
+
+    while dependencies_by_bone:
+        resolved = False
+
+        for bone_name, dependencies in list(dependencies_by_bone.items()):
+            if (depth := _calc_depth(dependencies)) is not None:
+                depth_by_bone[bone_name] = depth
+                dependencies_by_bone.pop(bone_name)
+                resolved = True
+
+        if not resolved:
+            # 依存関係が循環している場合は例外を送出する
+            raise RuntimeError(
+                f"Dependency cycle detected: {len(dependencies_by_bone)}"
+            )
+
+    return depth_by_bone

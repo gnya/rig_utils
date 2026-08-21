@@ -1,7 +1,10 @@
+from collections.abc import Callable
+
 import bpy
 from bpy.types import Object, PoseBone
 from mathutils import Matrix
 
+from .dependencies import calc_depth_by_bone
 from .types import CopyBoneMatrix, CopyBoneSpace
 
 
@@ -87,3 +90,35 @@ def insert_auto_keyframes(obj: Object, bone_names: list[str]):
                     )
 
                 bone.keyframe_insert("scale", group=bone.name, options=options)
+
+
+# ボーンのトランスフォームを適用する
+def apply_bone_transform(
+    obj: Object,
+    bone_names: list[str],
+    apply: Callable[[PoseBone], None],
+):
+    bones = obj.pose.bones
+    depth_by_bone = calc_depth_by_bone(obj)
+
+    # ある深さに対するボーンの一覧を格納した辞書を計算する
+    # ただし、ボーンはbone_dataが存在するもののみ
+    bones_by_depth: dict[int, list[str]] = {}
+
+    for bone_name in bone_names:
+        if (depth := depth_by_bone.get(bone_name)) is not None:
+            bones_by_depth.setdefault(depth, []).append(bone_name)
+
+    # 深さが浅いものから順番にトランスフォームを適用する
+    for depth in sorted(bones_by_depth):
+        for bone_name in bones_by_depth[depth]:
+            bone = bones[bone_name]
+            matrix_basis = bone.matrix_basis.copy()
+
+            apply(bone)
+
+            restore_locked_transform(bone, matrix_basis)
+
+        bpy.context.view_layer.update()
+
+    insert_auto_keyframes(obj, bone_names)
