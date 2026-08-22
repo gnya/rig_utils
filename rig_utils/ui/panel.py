@@ -3,6 +3,8 @@ from bpy.types import Context, Panel
 from rig_utils.core import is_asset
 from rig_utils.ops import (
     OBJECT_OT_rig_utils_add_asset_select,
+    OBJECT_OT_rig_utils_add_step_modifier,
+    OBJECT_OT_rig_utils_remove_step_modifier,
     OBJECT_OT_rig_utils_update_asset,
     POSE_OT_rig_utils_convert_legacy_transform,
     POSE_OT_rig_utils_copy_bone_transform,
@@ -22,13 +24,15 @@ class VIEW3D_PT_rig_utils(Panel):
 
     def draw(self, context: Context):
         layout = self.layout
+        settings = get_settings(context.scene)
 
-        layout.operator(
+        group = layout.column(align=True)
+        group.operator(
             OBJECT_OT_rig_utils_add_asset_select.bl_idname,
             text="Add Asset",
             icon="ADD",
         )
-        layout.operator(
+        group.operator(
             OBJECT_OT_rig_utils_update_asset.bl_idname,
             text="Update Asset",
             icon="FILE_REFRESH",
@@ -47,21 +51,21 @@ class VIEW3D_PT_rig_utils(Panel):
         )
 
         group = layout.column(align=True)
-        group.operator(
+        row = group.row(align=True)
+        row.operator(
             POSE_OT_rig_utils_copy_bone_transform.bl_idname,
-            text="Copy Transform",
+            text="Copy",
             icon="COPYDOWN",
         )
+        row.operator(
+            POSE_OT_rig_utils_paste_bone_transform.bl_idname,
+            text="Paste",
+            icon="PASTEDOWN",
+        )
         group.prop(
-            get_settings(context.scene),
+            settings,
             "copy_transform_space",
             text="",
-        )
-
-        layout.operator(
-            POSE_OT_rig_utils_paste_bone_transform.bl_idname,
-            text="Paste Transform",
-            icon="PASTEDOWN",
         )
 
         group = layout.column(align=True)
@@ -71,9 +75,34 @@ class VIEW3D_PT_rig_utils(Panel):
             icon="TRACKING",
         )
         group.prop(
-            get_settings(context.scene),
+            settings,
             "convert_legacy_src",
             text="",
+        )
+
+        group = layout.column(align=True)
+        row = group.row(align=True)
+        row.operator(
+            OBJECT_OT_rig_utils_add_step_modifier.bl_idname,
+            text="Add Step Modifier",
+            icon="IPO_CONSTANT",
+        )
+        row.operator(
+            OBJECT_OT_rig_utils_remove_step_modifier.bl_idname,
+            text="",
+            icon="X",
+        )
+        group.prop(
+            settings,
+            "channel_frame_step",
+            text="Frame Step",
+            expand=True,
+        )
+        group.prop(
+            settings,
+            "channel_frame_offset",
+            text="Frame Offset",
+            expand=True,
         )
 
 

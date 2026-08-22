@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from bpy.props import EnumProperty, PointerProperty
+from bpy.props import EnumProperty, IntProperty, PointerProperty
 from bpy.types import Object, PropertyGroup, Scene
 
 
@@ -51,6 +51,18 @@ class RigUtilsSettings(PropertyGroup):
         name="Convert Legacy Source",
         description="Convert legacy source",
         poll=_poll_convert_legacy_src,
+    )
+
+    channel_frame_step: IntProperty(
+        name="Channel Frame Step",
+        description="Channel frame step",
+        default=2,
+    )
+
+    channel_frame_offset: IntProperty(
+        name="Channel Frame Offset",
+        description="Channel frame offset",
+        default=1,
     )
 
     @staticmethod

@@ -16,6 +16,10 @@ from .copy_paste import (
     copy_bone_transform,
     paste_bone_transform,
 )
+from .keyframe import (
+    add_step_modifier,
+    remove_step_modifier,
+)
 from .visibility import (
     get_animated_bones,
     get_modified_bones,
@@ -23,6 +27,8 @@ from .visibility import (
 )
 
 __all__ = [
+    add_step_modifier,
+    remove_step_modifier,
     cache_assets_collection,
     cache_assets_path,
     cached_assets_collection,
