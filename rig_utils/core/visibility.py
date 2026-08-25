@@ -1,4 +1,5 @@
 from bpy.types import Armature, Object, Pose
+from idprop.types import IDPropertyGroup
 
 from rig_utils.utils import is_internal_bones
 
@@ -50,5 +51,27 @@ def get_modified_bones(obj: Object) -> set[str]:
     for bone in obj.pose.bones:
         if not bone.matrix_basis.is_identity:
             bone_names.add(bone.name)
+
+        for key, value in bone.items():
+            if not isinstance(value, IDPropertyGroup):
+                prop_ui = bone.id_properties_ui(key)
+
+                if value != prop_ui.as_dict().get("default"):
+                    bone_names.add(bone.name)
+
+    return set([n for n in bone_names if not is_internal_bones(n)])
+
+
+# オーバーライドされたボーンの一覧を取得します（マテリアルオーバーライド利用時限定）
+def get_overrided_bones(obj: Object) -> set[str]:
+    if obj.override_library is None:
+        return set()
+
+    bone_names: set[str] = set()
+
+    for prop in obj.override_library.properties:
+        if prop.rna_path.startswith('pose.bones["'):
+            bone_name = prop.rna_path.split('"')[1]
+            bone_names.add(bone_name)
 
     return set([n for n in bone_names if not is_internal_bones(n)])

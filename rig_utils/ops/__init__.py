@@ -18,6 +18,7 @@ from .keyframe import (
 from .visibility import (
     POSE_OT_rig_utils_show_animated_bones,
     POSE_OT_rig_utils_show_modified_bones,
+    POSE_OT_rig_utils_show_overrided_bones,
 )
 
 classes = (
@@ -32,6 +33,7 @@ classes = (
     OBJECT_OT_rig_utils_remove_step_modifier,
     POSE_OT_rig_utils_show_animated_bones,
     POSE_OT_rig_utils_show_modified_bones,
+    POSE_OT_rig_utils_show_overrided_bones,
 )
 
 

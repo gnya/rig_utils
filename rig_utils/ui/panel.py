@@ -11,6 +11,7 @@ from rig_utils.ops import (
     POSE_OT_rig_utils_paste_bone_transform,
     POSE_OT_rig_utils_show_animated_bones,
     POSE_OT_rig_utils_show_modified_bones,
+    POSE_OT_rig_utils_show_overrided_bones,
 )
 from rig_utils.props import get_settings
 
@@ -47,6 +48,11 @@ class VIEW3D_PT_rig_utils(Panel):
         group.operator(
             POSE_OT_rig_utils_show_animated_bones.bl_idname,
             text="Show Animated",
+            icon="HIDE_OFF",
+        )
+        group.operator(
+            POSE_OT_rig_utils_show_overrided_bones.bl_idname,
+            text="Show Overrided",
             icon="HIDE_OFF",
         )
 

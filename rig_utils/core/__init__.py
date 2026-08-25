@@ -23,6 +23,7 @@ from .keyframe import (
 from .visibility import (
     get_animated_bones,
     get_modified_bones,
+    get_overrided_bones,
     show_only_bones,
 )
 
@@ -38,6 +39,7 @@ __all__ = [
     get_animated_bones,
     get_asset_path,
     get_modified_bones,
+    get_overrided_bones,
     has_override_library,
     is_asset,
     load_asset,
