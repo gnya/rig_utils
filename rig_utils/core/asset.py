@@ -96,6 +96,13 @@ def load_asset(path: str, collection: str) -> Collection | None:
         do_fully_editable=True,
     )
 
+    ui_script = bpy.data.texts.get(f"{link.name}_rig_ui.py")
+
+    if ui_script is not None:
+        # UIスクリプトが存在するなら実行します
+        with bpy.context.temp_override(edit_text=ui_script):
+            bpy.ops.text.run_script()
+
     return override
 
 
