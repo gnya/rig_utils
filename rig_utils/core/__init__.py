@@ -5,7 +5,7 @@ from .asset import (
     cached_assets_path,
     get_asset_path,
     has_override_library,
-    is_asset,
+    is_asset_root,
     load_asset,
     set_asset_path,
 )
@@ -41,7 +41,7 @@ __all__ = [
     get_modified_bones,
     get_overrided_bones,
     has_override_library,
-    is_asset,
+    is_asset_root,
     load_asset,
     paste_bone_transform,
     set_asset_path,

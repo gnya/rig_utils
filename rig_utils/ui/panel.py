@@ -1,6 +1,6 @@
 from bpy.types import Context, Panel
 
-from rig_utils.core import is_asset
+from rig_utils.core import is_asset_root
 from rig_utils.ops import (
     OBJECT_OT_rig_utils_add_asset_select,
     OBJECT_OT_rig_utils_add_step_modifier,
@@ -124,7 +124,7 @@ class VIEW3D_PT_rig_utils_settings(Panel):
         obj = context.active_object
 
         return (
-            is_asset(obj)
+            is_asset_root(obj)
             and "preview_subsurf" in obj  # type: ignore
             and "render_subsurf" in obj  # type: ignore
         )

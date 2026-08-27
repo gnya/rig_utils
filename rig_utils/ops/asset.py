@@ -14,7 +14,7 @@ from rig_utils.core import (
     cached_assets_path,
     get_asset_path,
     has_override_library,
-    is_asset,
+    is_asset_root,
     load_asset,
     set_asset_path,
 )
@@ -125,7 +125,7 @@ class OBJECT_OT_rig_utils_update_asset(Operator):
     def poll(cls, context: Context) -> bool:
         obj = context.active_object
 
-        return is_asset(obj) and has_override_library(obj)
+        return is_asset_root(obj) and has_override_library(obj)
 
     def invoke(self, context: Context, event: Event) -> set[OperatorReturnItems]:
         obj = context.active_object

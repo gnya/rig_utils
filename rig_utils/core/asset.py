@@ -9,13 +9,18 @@ _assets_collection_cache: list[str] = []
 
 
 # 与えられたオブジェクトがアセットかどうかを判別します
-def is_asset(obj: Object | None) -> bool:
+def is_asset_root(obj: Object | None) -> bool:
     if obj is None:
         return False
     elif obj.type not in ["EMPTY", "ARMATURE"]:
         return False
 
-    return re.fullmatch(r"[A-Z]+_(rig|root)", obj.name) is not None
+    return re.match(r"[A-Z]+_(rig|root)", obj.name) is not None
+
+
+# 外部のアセットに依存しているかを判別します
+def has_override_library(obj: Object | None) -> bool:
+    return obj is not None and obj.override_library is not None
 
 
 # ディレクトリ内の最新のアセットを取得します
@@ -89,6 +94,8 @@ def load_asset(path: str, collection: str) -> Collection | None:
         data_to.collections = [collection]
 
     link: Collection = data_to.collections[0]  # type: ignore
+    prefix = link.name
+
     override = link.override_hierarchy_create(
         bpy.context.scene,
         bpy.context.view_layer,
@@ -96,7 +103,14 @@ def load_asset(path: str, collection: str) -> Collection | None:
         do_fully_editable=True,
     )
 
-    ui_script = bpy.data.texts.get(f"{link.name}_rig_ui.py")
+    # アセットを3Dカーソルの位置に移動させます
+    for child in override.children:
+        if child.name.startswith(f"{prefix}_RIGS"):
+            for obj in child.objects:
+                if is_asset_root(obj):
+                    obj.location = bpy.context.scene.cursor.location
+
+    ui_script = bpy.data.texts.get(f"{prefix}_rig_ui.py")
 
     if ui_script is not None:
         # UIスクリプトが存在するなら実行します
@@ -104,11 +118,6 @@ def load_asset(path: str, collection: str) -> Collection | None:
             bpy.ops.text.run_script()
 
     return override
-
-
-# 外部のアセットに依存しているかを判別します
-def has_override_library(obj: Object | None) -> bool:
-    return obj is not None and obj.override_library is not None
 
 
 # アセットのパスを取得します
