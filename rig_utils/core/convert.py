@@ -73,13 +73,13 @@ LEGACY_MAPPING: dict[str, str] = {
 }
 
 
-def legacy_mapping(key: str) -> str | None:
+def legacy_mapping(key: str) -> str:
     if key in LEGACY_MAPPING:
         return LEGACY_MAPPING[key]
     elif flip_name(key) in LEGACY_MAPPING:
         return flip_name(LEGACY_MAPPING[flip_name(key)])
     else:
-        return None
+        return ""
 
 
 def convert_legacy_transform(src: Object, dst: Object):
