@@ -16,6 +16,9 @@ from .copy_paste import (
     copy_bone_transform,
     paste_bone_transform,
 )
+from .empty import (
+    add_empty_at_bones,
+)
 from .keyframe import (
     add_step_modifier,
     remove_step_modifier,
@@ -28,6 +31,7 @@ from .visibility import (
 )
 
 __all__ = [
+    add_empty_at_bones,
     add_step_modifier,
     remove_step_modifier,
     cache_assets_collection,

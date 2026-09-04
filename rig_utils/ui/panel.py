@@ -6,6 +6,7 @@ from rig_utils.ops import (
     OBJECT_OT_rig_utils_add_step_modifier,
     OBJECT_OT_rig_utils_remove_step_modifier,
     OBJECT_OT_rig_utils_update_asset,
+    POSE_OT_rig_utils_add_empty_at_bones,
     POSE_OT_rig_utils_convert_legacy_transform,
     POSE_OT_rig_utils_copy_bone_transform,
     POSE_OT_rig_utils_paste_bone_transform,
@@ -75,6 +76,13 @@ class VIEW3D_PT_rig_utils(Panel):
             settings,
             "copy_transform_space",
             text="",
+        )
+
+        group = layout.column(align=True)
+        group.operator(
+            POSE_OT_rig_utils_add_empty_at_bones.bl_idname,
+            text="Add Empty at Bones",
+            icon="ADD",
         )
 
         group = layout.column(align=True)
