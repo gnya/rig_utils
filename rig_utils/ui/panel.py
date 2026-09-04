@@ -40,21 +40,24 @@ class VIEW3D_PT_rig_utils(Panel):
         )
 
         group = layout.column(align=True)
-        group.operator(
+        row = group.row(align=True)
+        row.operator(
             POSE_OT_rig_utils_show_modified_bones.bl_idname,
-            text="Show Modified",
+            text="Modified",
             icon="HIDE_OFF",
         )
-        group.operator(
+        row.operator(
             POSE_OT_rig_utils_show_animated_bones.bl_idname,
-            text="Show Animated",
+            text="Animated",
             icon="HIDE_OFF",
         )
-        group.operator(
+        row = group.row(align=True)
+        row.operator(
             POSE_OT_rig_utils_show_overrided_bones.bl_idname,
-            text="Show Overrided",
+            text="Overrided",
             icon="HIDE_OFF",
         )
+        row.label(text="")
 
         group = layout.column(align=True)
         row = group.row(align=True)
@@ -98,16 +101,17 @@ class VIEW3D_PT_rig_utils(Panel):
             text="",
             icon="X",
         )
-        group.prop(
-            settings,
-            "channel_frame_step",
-            text="Frame Step",
-            expand=True,
-        )
-        group.prop(
+        row = group.row(align=True)
+        row.prop(
             settings,
             "channel_frame_offset",
-            text="Frame Offset",
+            text="Offset",
+            expand=True,
+        )
+        row.prop(
+            settings,
+            "channel_frame_step",
+            text="Step",
             expand=True,
         )
 
