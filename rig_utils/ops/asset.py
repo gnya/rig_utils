@@ -18,6 +18,7 @@ from rig_utils.core import (
     load_asset,
     set_asset_path,
 )
+from rig_utils.utils import wait_cursor
 
 if TYPE_CHECKING:
     from bpy._typing.rna_enums import OperatorReturnItems
@@ -38,7 +39,8 @@ class OBJECT_OT_rig_utils_add_asset_select(Operator):
         addon = context.preferences.addons["rig_utils"]
         wm = context.window_manager
 
-        cache_assets_path(addon.preferences.asset_dir)
+        with wait_cursor(context):
+            cache_assets_path(addon.preferences.asset_dir)
 
         return wm.invoke_props_dialog(self)
 
@@ -72,7 +74,8 @@ class OBJECT_OT_rig_utils_add_asset_select_collection(Operator):
     def invoke(self, context: Context, event: Event) -> set[OperatorReturnItems]:
         wm = context.window_manager
 
-        cache_assets_collection(self.asset_path)
+        with wait_cursor(context):
+            cache_assets_collection(self.asset_path)
 
         return wm.invoke_props_dialog(self)
 

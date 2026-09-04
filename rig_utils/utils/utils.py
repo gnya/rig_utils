@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from collections.abc import Generator
+from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 import bpy
-from bpy.types import PoseBone
+from bpy.types import Context, PoseBone
 
 if TYPE_CHECKING:
     from bpy._typing.rna_enums import EventTypeItems
@@ -63,3 +65,14 @@ def unregister_keymap(category: str, idname: str):
 
         if len(km.keymap_items) == 0:
             wm.keyconfigs.addon.keymaps.remove(km)
+
+
+# カーソルの状態を待機中に変更する
+@contextmanager
+def wait_cursor(context: Context) -> Generator[None, None, None]:
+    context.window.cursor_set("WAIT")
+
+    try:
+        yield
+    finally:
+        context.window.cursor_set("DEFAULT")
