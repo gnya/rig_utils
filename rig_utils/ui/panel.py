@@ -29,14 +29,15 @@ class VIEW3D_PT_rig_utils(Panel):
         settings = get_settings(context.scene)
 
         group = layout.column(align=True)
-        group.operator(
+        row = group.row(align=True)
+        row.operator(
             OBJECT_OT_rig_utils_add_asset_select.bl_idname,
             text="Add Asset",
             icon="ADD",
         )
-        group.operator(
+        row.operator(
             OBJECT_OT_rig_utils_update_asset.bl_idname,
-            text="Update Asset",
+            text="",
             icon="FILE_REFRESH",
         )
 
