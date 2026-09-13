@@ -23,6 +23,9 @@ from .keyframe import (
     add_step_modifier,
     remove_step_modifier,
 )
+from .render import (
+    render_preview,
+)
 from .visibility import (
     get_animated_bones,
     get_modified_bones,
@@ -50,4 +53,5 @@ __all__ = [
     paste_bone_transform,
     set_asset_path,
     show_only_bones,
+    render_preview,
 ]

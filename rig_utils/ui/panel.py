@@ -13,6 +13,7 @@ from rig_utils.ops import (
     POSE_OT_rig_utils_show_animated_bones,
     POSE_OT_rig_utils_show_modified_bones,
     POSE_OT_rig_utils_show_overrided_bones,
+    RENDER_OT_rig_utils_render_preview,
 )
 from rig_utils.props import get_settings
 
@@ -122,6 +123,12 @@ class VIEW3D_PT_rig_utils(Panel):
             "channel_frame_step",
             text="Step",
             expand=True,
+        )
+
+        layout.operator(
+            RENDER_OT_rig_utils_render_preview.bl_idname,
+            text="Render Preview",
+            icon="RENDER_ANIMATION",
         )
 
 
