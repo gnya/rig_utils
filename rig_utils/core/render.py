@@ -68,6 +68,7 @@ def render_preview():
     image_settings = scene.render.image_settings
 
     original_path = scene.render.filepath
+    original_frame = scene.frame_current
     output_path = Path(bpy.path.abspath(original_path))
     output_path = output_path.with_name(Path(bpy.data.filepath).stem)
 
@@ -77,3 +78,4 @@ def render_preview():
         _render_preview_sequence(scene, output_path)
 
     scene.render.filepath = original_path
+    scene.frame_current = original_frame
