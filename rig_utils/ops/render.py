@@ -17,6 +17,7 @@ class RENDER_OT_rig_utils_render_preview(Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context: Context) -> set[OperatorReturnItems]:
-        render_preview()
+        if not render_preview(context):
+            return {"CANCELLED"}
 
         return {"FINISHED"}
