@@ -3,48 +3,46 @@ from collections.abc import Iterator
 from bpy.types import FCurve, Object
 
 
-# アクションにあるチャンネルにステップ補間モディファイアを設定する
-def _add_step_modifier(channel: FCurve, step: int, offset: int):
-    stepped = channel.modifiers.new("STEPPED")
+# アクションにあるFCurveにステップ補間モディファイアを設定する
+def _add_step_modifier(fcurve: FCurve, step: int, offset: int):
+    stepped = fcurve.modifiers.new("STEPPED")
     stepped.frame_step = step
     stepped.frame_offset = offset
 
 
-# アクションにあるチャンネルのステップ補間モディファイアを削除する
-def _remove_step_modifier(channel: FCurve):
-    for modifier in list(channel.modifiers):
+# アクションにあるFCurveのステップ補間モディファイアを削除する
+def _remove_step_modifier(fcurve: FCurve):
+    for modifier in list(fcurve.modifiers):
         if modifier.type == "STEPPED":
-            channel.modifiers.remove(modifier)
+            fcurve.modifiers.remove(modifier)
 
     # そのままだとグラフエディタが更新されないのでupdateを呼ぶ
     # ref: https://blender.stackexchange.com/questions/157435
-    channel.modifiers.update()
+    fcurve.modifiers.update()
 
 
-# オブジェクトのアクションにあるチャンネルのイテレーターを返す
-def _iter_action_channel(obj: Object) -> Iterator[FCurve]:
+# オブジェクトのアクションにあるFCurveのイテレーターを返す
+def _iter_action_fcurve(obj: Object) -> Iterator[FCurve]:
     if obj.animation_data is not None:
         if obj.animation_data.action is not None:
-            for group in obj.animation_data.action.groups:
-                for channel in group.channels:
-                    yield channel
+            for fcurve in obj.animation_data.action.fcurves:
+                yield fcurve
 
         for track in obj.animation_data.nla_tracks:
             for strip in track.strips:
                 if strip.action is not None:
-                    for group in strip.action.groups:
-                        for channel in group.channels:
-                            yield channel
+                    for fcurve in strip.action.fcurves:
+                        yield fcurve
 
 
-# アクションにあるチャンネルにステップ補間モディファイアを設定する
+# アクションにあるFCurveにステップ補間モディファイアを設定する
 def add_step_modifier(obj: Object, step: int, offset: int):
-    for channel in _iter_action_channel(obj):
-        _remove_step_modifier(channel)
-        _add_step_modifier(channel, step, offset)
+    for fcurve in _iter_action_fcurve(obj):
+        _remove_step_modifier(fcurve)
+        _add_step_modifier(fcurve, step, offset)
 
 
-# アクションにあるチャンネルのステップ補間モディファイアを削除する
+# アクションにあるFCurveのステップ補間モディファイアを削除する
 def remove_step_modifier(obj: Object):
-    for channel in _iter_action_channel(obj):
-        _remove_step_modifier(channel)
+    for fcurve in _iter_action_fcurve(obj):
+        _remove_step_modifier(fcurve)
