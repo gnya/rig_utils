@@ -14,7 +14,7 @@ class RENDER_OT_rig_utils_render_preview(Operator):
     bl_idname = "render.rig_utils_render_preview"
     bl_label = "Render Preview"
     bl_description = "Render preview"
-    bl_options = {"REGISTER", "UNDO"}
+    bl_options = {"REGISTER"}
 
     def execute(self, context: Context) -> set[OperatorReturnItems]:
         if not render_preview(context):
