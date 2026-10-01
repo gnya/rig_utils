@@ -1,13 +1,20 @@
-from bpy.types import Object, PoseBone
+from collections.abc import Iterator
+
+from bpy.types import Context, Object, PoseBone
 from bpy.utils import flip_name
 from mathutils import Matrix
 
-from rig_utils.utils import is_internal_bones, is_selected_bone
+from rig_utils.utils import (
+    insert_transform_keyframe,
+    is_internal_bones,
+    is_selected_bone,
+)
 
 from .transform import apply_bone_transform
 
 
-def convert_transform(src: PoseBone, dst: PoseBone):
+# 旧ボーンのトランスフォームを新ボーンのトランスフォームに変換する
+def _convert_transform(src: PoseBone, dst: PoseBone):
     src_local = src.matrix_basis
     src_rest = src.bone.matrix_local
 
@@ -73,7 +80,8 @@ LEGACY_MAPPING: dict[str, str] = {
 }
 
 
-def legacy_mapping(key: str) -> str:
+# 新ボーンの名前に対応する旧ボーンの名前を返す
+def _legacy_mapping(key: str) -> str:
     if key in LEGACY_MAPPING:
         return LEGACY_MAPPING[key]
     elif flip_name(key) in LEGACY_MAPPING:
@@ -82,17 +90,47 @@ def legacy_mapping(key: str) -> str:
         return ""
 
 
-def convert_legacy_transform(src: Object, dst: Object):
-    bone_names = [
-        b.name
+# 旧ボーンのトランスフォームを新ボーンのトランスフォームに変換する
+def convert_legacy_transform(src: Object, dst: Object) -> list[PoseBone]:
+    bones = [
+        b
         for b in dst.pose.bones
-        if is_selected_bone(b) and not is_internal_bones(b.name)
+        if is_selected_bone(b)
+        and not is_internal_bones(b.name)
+        and _legacy_mapping(b.name) != ""
     ]
+    bone_names = [b.name for b in bones]
 
     def _apply(dst_bone: PoseBone):
-        src_bone = src.pose.bones.get(legacy_mapping(dst_bone.name))
+        src_bone = src.pose.bones.get(_legacy_mapping(dst_bone.name))
 
         if src_bone is not None:
-            convert_transform(src_bone, dst_bone)
+            _convert_transform(src_bone, dst_bone)
 
     apply_bone_transform(dst, bone_names, _apply)
+
+    return bones
+
+
+# 旧ボーンのアニメーションを新ボーンのアニメーションに変換する
+def convert_legacy_animation(
+    context: Context,
+    src: Object,
+    dst: Object,
+    start: int,
+    end: int,
+    step: int,
+) -> Iterator[int]:
+    scene = context.scene
+    frame_current = scene.frame_current
+
+    for frame in range(start, end + 1, step):
+        scene.frame_current = frame
+        bones = convert_legacy_transform(src, dst)
+
+        for bone in bones:
+            insert_transform_keyframe(bone)
+
+        yield frame
+
+    scene.frame_current = frame_current

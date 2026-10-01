@@ -7,6 +7,7 @@ from rig_utils.ops import (
     OBJECT_OT_rig_utils_remove_step_modifier,
     OBJECT_OT_rig_utils_update_asset,
     POSE_OT_rig_utils_add_empty_at_bones,
+    POSE_OT_rig_utils_convert_legacy_animation,
     POSE_OT_rig_utils_convert_legacy_transform,
     POSE_OT_rig_utils_copy_bone_transform,
     POSE_OT_rig_utils_paste_bone_transform,
@@ -87,10 +88,16 @@ class VIEW3D_PT_rig_utils(Panel):
         )
 
         group = layout.column(align=True)
-        group.operator(
+        row = group.row(align=True)
+        row.operator(
             POSE_OT_rig_utils_convert_legacy_transform.bl_idname,
-            text="Convert Legacy Transform",
-            icon="TRACKING",
+            text="Convert Transform",
+            icon="POSE_HLT",
+        )
+        row.operator(
+            POSE_OT_rig_utils_convert_legacy_animation.bl_idname,
+            text="",
+            icon="ACTION_TWEAK",
         )
         group.prop(
             settings,

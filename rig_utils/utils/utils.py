@@ -76,3 +76,17 @@ def wait_cursor(context: Context) -> Generator[None, None, None]:
         yield
     finally:
         context.window.cursor_set("DEFAULT")
+
+
+# ボーンのトランスフォームにキーフレームを打つ
+def insert_transform_keyframe(bone: PoseBone):
+    bone.keyframe_insert(data_path="location", group=bone.name)
+
+    if bone.rotation_mode == "QUATERNION":
+        bone.keyframe_insert(data_path="rotation_quaternion", group=bone.name)
+    elif bone.rotation_mode == "AXIS_ANGLE":
+        bone.keyframe_insert(data_path="rotation_axis_angle", group=bone.name)
+    else:
+        bone.keyframe_insert(data_path="rotation_euler", group=bone.name)
+
+    bone.keyframe_insert(data_path="scale", group=bone.name)
