@@ -126,6 +126,9 @@ def convert_legacy_animation(
 
     for frame in range(start, end + 1, step):
         scene.frame_current = frame
+
+        context.view_layer.update()
+
         bones = convert_legacy_transform(src, dst)
 
         for bone in bones:
