@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from collections.abc import Generator
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
@@ -13,7 +14,7 @@ if TYPE_CHECKING:
 
 # 内部で使用されているボーンかどうかを判別します
 def is_internal_bones(bone_name: str):
-    splited = bone_name.split("-", 1)
+    splited = re.split(r"[-_]", bone_name)
 
     if len(splited) == 1:
         return False
