@@ -5,7 +5,6 @@ from collections.abc import Generator
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
-import bpy
 from bpy.types import Context, PoseBone
 
 if TYPE_CHECKING:
@@ -33,6 +32,7 @@ def is_selected_bone(bone: PoseBone):
 
 # キーマップを追加します
 def register_keymap(
+    context: Context,
     category: str,
     idname: str,
     type: EventTypeItems,
@@ -40,7 +40,7 @@ def register_keymap(
     ctrl: bool = False,
     alt: bool = False,
 ):
-    wm = bpy.context.window_manager
+    wm = context.window_manager
     km = wm.keyconfigs.addon.keymaps.get(category)
 
     if km is None:
@@ -57,8 +57,8 @@ def register_keymap(
 
 
 # キーマップを削除します
-def unregister_keymap(category: str, idname: str):
-    wm = bpy.context.window_manager
+def unregister_keymap(context: Context, category: str, idname: str):
+    wm = context.window_manager
     km = wm.keyconfigs.addon.keymaps.get(category)
 
     if km is not None:

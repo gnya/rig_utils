@@ -29,6 +29,6 @@ class POSE_OT_rig_utils_add_empty_at_bones(Operator):
         if obj is None:
             return {"CANCELLED"}
 
-        add_empty_at_bones(obj)
+        add_empty_at_bones(context, obj)
 
         return {"FINISHED"}

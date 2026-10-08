@@ -37,7 +37,7 @@ class POSE_OT_rig_utils_convert_legacy_transform(Operator):
         if src_obj is None:
             return {"CANCELLED"}
 
-        convert_legacy_transform(src_obj, dst_obj)
+        convert_legacy_transform(context, src_obj, dst_obj)
 
         return {"FINISHED"}
 

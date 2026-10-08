@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import bpy
 from bpy.types import Context, Operator
 
 from rig_utils.core import copy_bone_transform, paste_bone_transform
@@ -33,13 +34,14 @@ class POSE_OT_rig_utils_copy_bone_transform(Operator):
 
         settings = get_settings(context.scene)
 
-        copy_bone_transform(obj, settings.copy_transform_space)
+        copy_bone_transform(context, obj, settings.copy_transform_space)
 
         return {"FINISHED"}
 
     @staticmethod
     def register():
         register_keymap(
+            bpy.context,
             "Pose",
             POSE_OT_rig_utils_copy_bone_transform.bl_idname,
             type="C",
@@ -50,6 +52,7 @@ class POSE_OT_rig_utils_copy_bone_transform(Operator):
     @staticmethod
     def unregister():
         unregister_keymap(
+            bpy.context,
             "Pose",
             POSE_OT_rig_utils_copy_bone_transform.bl_idname,
         )
@@ -71,7 +74,7 @@ class POSE_OT_rig_utils_paste_bone_transform(Operator):
         if obj is None:
             return {"CANCELLED"}
 
-        if not paste_bone_transform(obj):
+        if not paste_bone_transform(context, obj):
             return {"CANCELLED"}
 
         return {"FINISHED"}
@@ -79,6 +82,7 @@ class POSE_OT_rig_utils_paste_bone_transform(Operator):
     @staticmethod
     def register():
         register_keymap(
+            bpy.context,
             "Pose",
             POSE_OT_rig_utils_paste_bone_transform.bl_idname,
             type="V",
@@ -89,6 +93,7 @@ class POSE_OT_rig_utils_paste_bone_transform(Operator):
     @staticmethod
     def unregister():
         unregister_keymap(
+            bpy.context,
             "Pose",
             POSE_OT_rig_utils_paste_bone_transform.bl_idname,
         )

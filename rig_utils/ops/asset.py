@@ -110,7 +110,7 @@ class OBJECT_OT_rig_utils_add_asset(Operator):
         return wm.invoke_confirm(self, event)
 
     def execute(self, context: Context) -> set[OperatorReturnItems]:
-        if load_asset(self.asset_path, self.asset_collection) is None:
+        if load_asset(context, self.asset_path, self.asset_collection) is None:
             return {"CANCELLED"}
 
         return {"FINISHED"}

@@ -2,7 +2,7 @@ import os
 import re
 
 import bpy
-from bpy.types import Collection, Object
+from bpy.types import Collection, Context, Object
 
 _assets_path_cache: list[tuple[str, str]] = []
 _assets_collection_cache: list[str] = []
@@ -86,7 +86,7 @@ def cached_assets_collection() -> list[str]:
 
 
 # アセットを読み込みます
-def load_asset(path: str, collection: str) -> Collection | None:
+def load_asset(context: Context, path: str, collection: str) -> Collection | None:
     with bpy.data.libraries.load(path, link=True) as (data_from, data_to):
         if collection not in data_from.collections:
             return None
@@ -97,8 +97,8 @@ def load_asset(path: str, collection: str) -> Collection | None:
     prefix = link.name
 
     override = link.override_hierarchy_create(
-        bpy.context.scene,
-        bpy.context.view_layer,
+        context.scene,
+        context.view_layer,
         reference=link,
         do_fully_editable=True,
     )
@@ -108,13 +108,13 @@ def load_asset(path: str, collection: str) -> Collection | None:
         if child.name.startswith(f"{prefix}_RIGS"):
             for obj in child.objects:
                 if is_asset_root(obj):
-                    obj.location = bpy.context.scene.cursor.location
+                    obj.location = context.scene.cursor.location
 
     ui_script = bpy.data.texts.get(f"{prefix}_rig_ui.py")
 
     if ui_script is not None:
         # UIスクリプトが存在するなら実行します
-        with bpy.context.temp_override(edit_text=ui_script):
+        with context.temp_override(edit_text=ui_script):
             bpy.ops.text.run_script()
 
     return override

@@ -1,8 +1,7 @@
 import json
 from json.decoder import JSONDecodeError
 
-import bpy
-from bpy.types import Object, PoseBone
+from bpy.types import Context, Object, PoseBone
 
 from rig_utils.utils import is_internal_bones, is_selected_bone
 
@@ -19,6 +18,7 @@ from .transform import (
 
 # ボーンのトランスフォームをコピーする
 def copy_bone_transform(
+    context: Context,
     obj: Object,
     space: CopyBoneSpace = "WORLD",
 ):
@@ -33,14 +33,14 @@ def copy_bone_transform(
             }
 
     data = {"space": space, "bone_data": bone_data}
-    wm = bpy.context.window_manager
+    wm = context.window_manager
     wm.clipboard = json.dumps(data)
 
 
 # ボーンのトランスフォームをペーストする
-def paste_bone_transform(obj: Object) -> bool:
+def paste_bone_transform(context: Context, obj: Object) -> bool:
     try:
-        wm = bpy.context.window_manager
+        wm = context.window_manager
         data = json.loads(wm.clipboard)
     except JSONDecodeError:
         return False
@@ -52,6 +52,6 @@ def paste_bone_transform(obj: Object) -> bool:
         set_transform(bone, space, bone_data[bone.name]["matrix"])
         set_custom_properties(bone, bone_data[bone.name]["props"])
 
-    apply_bone_transform(obj, bone_data.keys(), _apply)
+    apply_bone_transform(context, obj, bone_data.keys(), _apply)
 
     return True

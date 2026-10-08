@@ -1,7 +1,6 @@
 from collections.abc import Callable
 
-import bpy
-from bpy.types import Object, PoseBone
+from bpy.types import Context, Object, PoseBone
 from mathutils import Matrix
 
 from .dependencies import calc_depth_by_bone
@@ -66,11 +65,11 @@ def restore_locked_transform(bone: PoseBone, matrix_basis: Matrix):
 
 
 # 自動キーイングを利用している場合には自動でキーを打つ
-def insert_auto_keyframes(obj: Object, bone_names: list[str]):
+def insert_auto_keyframes(context: Context, obj: Object, bone_names: list[str]):
     bones = obj.pose.bones
 
-    if bpy.context.tool_settings.use_keyframe_insert_auto:
-        match bpy.context.tool_settings.auto_keying_mode:
+    if context.tool_settings.use_keyframe_insert_auto:
+        match context.tool_settings.auto_keying_mode:
             case "ADD_REPLACE_KEYS":
                 options = set()
             case "REPLACE_KEYS":
@@ -94,6 +93,7 @@ def insert_auto_keyframes(obj: Object, bone_names: list[str]):
 
 # ボーンのトランスフォームを適用する
 def apply_bone_transform(
+    context: Context,
     obj: Object,
     bone_names: list[str],
     apply: Callable[[PoseBone], None],
@@ -119,6 +119,6 @@ def apply_bone_transform(
 
             restore_locked_transform(bone, matrix_basis)
 
-        bpy.context.view_layer.update()
+        context.view_layer.update()
 
-    insert_auto_keyframes(obj, bone_names)
+    insert_auto_keyframes(context, obj, bone_names)

@@ -91,7 +91,11 @@ def _legacy_mapping(key: str) -> str:
 
 
 # 旧ボーンのトランスフォームを新ボーンのトランスフォームに変換する
-def convert_legacy_transform(src: Object, dst: Object) -> list[PoseBone]:
+def convert_legacy_transform(
+    context: Context,
+    src: Object,
+    dst: Object,
+) -> list[PoseBone]:
     bones = [
         b
         for b in dst.pose.bones
@@ -107,7 +111,7 @@ def convert_legacy_transform(src: Object, dst: Object) -> list[PoseBone]:
         if src_bone is not None:
             _convert_transform(src_bone, dst_bone)
 
-    apply_bone_transform(dst, bone_names, _apply)
+    apply_bone_transform(context, dst, bone_names, _apply)
 
     return bones
 
@@ -129,7 +133,7 @@ def convert_legacy_animation(
 
         context.view_layer.update()
 
-        bones = convert_legacy_transform(src, dst)
+        bones = convert_legacy_transform(context, src, dst)
 
         for bone in bones:
             insert_transform_keyframe(bone)
