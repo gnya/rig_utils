@@ -104,11 +104,6 @@ class OBJECT_OT_rig_utils_add_asset(Operator):
 
     asset_collection: StringProperty(name="Asset Collection")
 
-    def invoke(self, context: Context, event: Event) -> set[OperatorReturnItems]:
-        wm = context.window_manager
-
-        return wm.invoke_confirm(self, event)
-
     def execute(self, context: Context) -> set[OperatorReturnItems]:
         if load_asset(context, self.asset_path, self.asset_collection) is None:
             return {"CANCELLED"}
