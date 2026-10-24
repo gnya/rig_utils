@@ -77,6 +77,17 @@ LEGACY_MAPPING: dict[str, str] = {
     "f_pinky.01_master.L": "CTR_finger_pinky_fk.L",
     "thumb.01_master.L": "CTR_thumb_fk.L",
     "palm.L": "CTR_palm.L",
+    "eye_target": "CTR_eye_target",
+    "eyebrow_root.L": "CTR_eyebrows.L",
+    "lip_top.M": "CTR_lip.T",
+    "lip_top.L.001": "CTR_lip.T.L.001",
+    "lip_top.L": "CTR_lip.T.L.002",
+    "lip_bottom.M": "CTR_lip.B",
+    "lip_bottom.L.001": "CTR_lip.B.L.001",
+    "lip_bottom.L": "CTR_lip.B.L.002",
+    "lip_line.M": "CTR_lip_line",
+    "lip_line.L.001": "CTR_lip_line.L.001",
+    "lip_line.L": "CTR_lip_line.L.002",
 }
 
 
